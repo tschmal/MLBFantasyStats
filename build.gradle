@@ -1,0 +1,27 @@
+apply plugin: 'java'
+apply plugin: 'gradle-one-jar'
+
+buildscript {
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath group: 'com.github.rholder', name: 'gradle-one-jar', version: '1.0.3'
+    }
+
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.jsoup', name: 'jsoup', version: '1.7.2'
+    compile group: 'com.yammer.dropwizard', name: 'dropwizard-core', version: '0.6.1'
+}
+
+task oneJar(type: OneJar) {
+    mainClass = 'com.schmal.fbb.FBBMain'
+}
