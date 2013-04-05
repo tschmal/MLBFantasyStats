@@ -18,6 +18,6 @@ public class LinkUtil
             }
         }
 
-        return "FUCK";
+        return "/FUCK";
     }
 }
