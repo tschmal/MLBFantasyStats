@@ -1,12 +1,14 @@
-package com.schmal.fbb;
+package com.schmal.service;
 
 import com.schmal.util.LinkUtil;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.jsoup.Jsoup;
@@ -21,8 +23,10 @@ public class ESPNScraper
 
     private static URL leagueURL = null;
 
-    public static void scrape(String urlString)
+    public static List<String> getMatchups(String urlString)
     {
+        List<String> matchups = new ArrayList<String>();
+
         try
         {
             leagueURL = new URL(urlString);
@@ -41,7 +45,7 @@ public class ESPNScraper
                 Calendar cal = Calendar.getInstance();
                 if (dates != null && cal.getTime().compareTo(dates[0]) > 0)
                 {
-                    processWeek(week);
+                    matchups.addAll(processWeek(week));
                 }
             }
         }
@@ -50,10 +54,14 @@ public class ESPNScraper
             System.out.println("You done fucked up, son. I don't care enough to say specifics, so have a stack trace:");
             e.printStackTrace();
         }
+
+        return matchups;
     }
 
-    private static void processWeek(Element week) throws Exception
+    private static List<String> processWeek(Element week) throws Exception
     {
+        List<String> matchups = new ArrayList<String>();
+
         Element curRow = week.nextElementSibling();
         while (true)
         {
@@ -69,10 +77,12 @@ public class ESPNScraper
             }
 
             Document matchupDoc = getBoxScore(curRow);
-            System.out.println(matchupDoc.title());
+            matchups.add(matchupDoc.title());
 
             curRow = curRow.nextElementSibling();
         }
+
+        return matchups;
     }
 
     private static Document getSchedule(Document leagueDoc) throws Exception

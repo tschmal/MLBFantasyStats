@@ -18,10 +18,11 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.jsoup', name: 'jsoup', version: '1.7.2'
     compile group: 'com.yammer.dropwizard', name: 'dropwizard-core', version: '0.6.1'
+    compile group: 'org.jsoup', name: 'jsoup', version: '1.7.2'
+    compile group: 'org.projectlombok', name: 'lombok', version: '0.11.6'
 }
 
 task oneJar(type: OneJar) {
-    mainClass = 'com.schmal.fbb.FBBMain'
+    mainClass = 'com.schmal.MLBFantasyStatsService'
 }
