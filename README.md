@@ -10,6 +10,8 @@ Current usage
 
 `java -jar build/libs/MLBFantasyStats-standalone.jar server stats.yml` - starts the Jetty web server and resources.
 
+`gradle run` - Both builds the single jar and runs it. WARNING: On Windows it spawns two java processes. You may have to kill them to shut it completely down.
+
 Services
 --------
 
