@@ -3,3 +3,13 @@
 #
 
 leagueURL: http://games.espn.go.com/flb/leagueoffice?leagueId=49723
+
+database:
+
+    driverClass: org.postgresql.Driver
+    user: postgres
+    password: test123
+    url: jdbc:postgresql://localhost:5432/postgres
+    properties:
+        charSet: UTF-8
+    maxWaitForConnection: 1s

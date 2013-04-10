@@ -28,6 +28,7 @@ dependencies {
     compile group: 'com.yammer.dropwizard', name: 'dropwizard-hibernate', version: '0.6.2'
     compile group: 'org.jsoup', name: 'jsoup', version: '1.7.2'
     compile group: 'org.projectlombok', name: 'lombok', version: '0.11.6'
+    compile group: 'postgresql', name: 'postgresql', version: '9.1-901.jdbc4'
 }
 
 task run(type: Exec, dependsOn: oneJar) {
