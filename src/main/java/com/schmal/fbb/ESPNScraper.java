@@ -16,8 +16,8 @@ import org.jsoup.select.Elements;
 
 public class ESPNScraper
 {
-    private static final Pattern matchupStartPattern = Pattern.compile("\\((.*?) -");
-    private static final Pattern matchupEndPattern = Pattern.compile(" - (.*?)\\)");
+    private static final Pattern weekStartPattern = Pattern.compile("\\((.*?) -");
+    private static final Pattern weekEndPattern = Pattern.compile(" - (.*?)\\)");
 
     private static URL leagueURL = null;
 
@@ -33,15 +33,15 @@ public class ESPNScraper
 
             Document scheduleDoc = getSchedule(leagueDoc);
 
-            Elements matchups = scheduleDoc.select("tr.tableHead");
-            for (Element matchup : matchups)
+            Elements weeks = scheduleDoc.select("tr.tableHead");
+            for (Element week : weeks)
             {
-                Date[] dates = getMatchupDateRange(matchup, year);
+                Date[] dates = getWeekDateRange(week, year);
 
                 Calendar cal = Calendar.getInstance();
                 if (dates != null && cal.getTime().compareTo(dates[0]) > 0)
                 {
-                    processMatchup(matchup);
+                    processWeek(week);
                 }
             }
         }
@@ -52,9 +52,9 @@ public class ESPNScraper
         }
     }
 
-    private static void processMatchup(Element matchup) throws Exception
+    private static void processWeek(Element week) throws Exception
     {
-        Element curRow = matchup.nextElementSibling();
+        Element curRow = week.nextElementSibling();
         while (true)
         {
             if (curRow.hasClass("tableHead"))
@@ -83,8 +83,8 @@ public class ESPNScraper
 
     private static Document getBoxScore(Element matchup) throws Exception
     {
-        Elements matchupLinks = matchup.select("a");
-        return Jsoup.connect(getDomain() + LinkUtil.getLinkURL(matchupLinks, "Box")).get();
+        Element boxLink = matchup.select("a").get(4);
+        return Jsoup.connect(getDomain() + boxLink.attr("href")).get();
 
     }
 
@@ -93,18 +93,18 @@ public class ESPNScraper
         return leagueURL.getProtocol() + "://" + leagueURL.getHost();
     }
 
-    private static Date[] getMatchupDateRange(Element matchup, String year)
+    private static Date[] getWeekDateRange(Element week, String year)
     {
-        String matchupString = matchup.select("td").first().ownText();
+        String weekString = week.select("td").first().ownText();
 
         String start, end;
         try
         {
-            Matcher matcher = matchupStartPattern.matcher(matchupString);
+            Matcher matcher = weekStartPattern.matcher(weekString);
             matcher.find();
             start = matcher.group(1);
 
-            matcher = matchupEndPattern.matcher(matchupString);
+            matcher = weekEndPattern.matcher(weekString);
             matcher.find();
             end = matcher.group(1);
         }
