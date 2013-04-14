@@ -1,4 +1,5 @@
 apply plugin: 'java'
+apply plugin: 'pmd'
 apply plugin: com.smokejumperit.gradle.OneJarPlugin
 
 jar {
@@ -30,6 +31,9 @@ dependencies {
     compile group: 'org.projectlombok', name: 'lombok', version: '0.11.6'
     compile group: 'postgresql', name: 'postgresql', version: '9.1-901.jdbc4'
 }
+
+pmdMain.ruleSets = ['basic', 'imports']
+oneJar.dependsOn 'pmdMain'
 
 task run(type: Exec, dependsOn: oneJar) {
     commandLine = ['java', '-jar', 'build/libs/MLBFantasyStats-standalone.jar', 'server', 'stats.yml']

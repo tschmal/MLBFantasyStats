@@ -3,7 +3,6 @@ package com.schmal;
 import com.schmal.domain.League;
 import com.schmal.domain.ScoringCategory;
 import com.schmal.resource.RetrieveResource;
-import com.schmal.service.ESPNScraper;
 import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;
 import com.yammer.dropwizard.db.DatabaseConfiguration;
