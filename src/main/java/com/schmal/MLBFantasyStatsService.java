@@ -34,7 +34,7 @@ public class MLBFantasyStatsService extends Service<MLBFantasyStatsConfig>
     {
         bootstrap.setName("fantasy-stats");
         bootstrap.addBundle(hibernateBundle);
-        bootstrap.addBundle(new AssetsBundle("/web", "/"));
+        bootstrap.addBundle(new AssetsBundle("/web", "/", "index.html"));
     }
 
     @Override
