@@ -9,4 +9,6 @@ public class FullLeague
     private League league;
 
     private List<ScoringCategory> categories;
+
+    private List<Team> teams;
 }

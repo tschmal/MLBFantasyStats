@@ -1,5 +1,6 @@
 package com.schmal.util;
 
+import java.net.URL;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
@@ -16,5 +17,22 @@ public class LinkUtil
         }
 
         return "/FUCK";
+    }
+
+    public static String getLinkParameter(URL url, String parameter)
+    {
+        String value = null;
+
+        for (String param : url.getQuery().split("&"))
+        {
+            String name = param.split("=")[0];
+            if (parameter.equals(name))
+            {
+                value = param.split("=")[1];
+                break;
+            }
+        }
+
+        return value;
     }
 }
