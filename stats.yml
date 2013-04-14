@@ -13,3 +13,8 @@ database:
     properties:
         charSet: UTF-8
     maxWaitForConnection: 10s
+
+http:
+
+    rootPath: /services/*
+    port: 8080

@@ -4,6 +4,7 @@ import com.schmal.domain.League;
 import com.schmal.domain.ScoringCategory;
 import com.schmal.domain.Team;
 import com.schmal.resource.RetrieveResource;
+import com.yammer.dropwizard.assets.AssetsBundle;
 import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;
 import com.yammer.dropwizard.db.DatabaseConfiguration;
@@ -33,6 +34,7 @@ public class MLBFantasyStatsService extends Service<MLBFantasyStatsConfig>
     {
         bootstrap.setName("fantasy-stats");
         bootstrap.addBundle(hibernateBundle);
+        bootstrap.addBundle(new AssetsBundle("/web", "/"));
     }
 
     @Override
