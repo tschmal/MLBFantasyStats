@@ -6,11 +6,9 @@ Stats parser for an ESPN Fantasy Baseball League.
 Current usage
 -------------
 
-`gradle oneJar` - builds the singular jar file with everything we need.
+`gradle jar` - builds the source into a jar file and runs PMD.
 
-`java -jar build/libs/MLBFantasyStats-standalone.jar server stats.yml` - starts the Jetty web server and resources.
-
-`gradle run` - Both builds the single jar and runs it. WARNING: On Windows it spawns two java processes. You may have to kill them to shut it completely down.
+`gradle run` - builds the jar file, runs PMD, then runs the main class (effectively starting the application).
 
 Services
 --------
