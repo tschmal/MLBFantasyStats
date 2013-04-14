@@ -21,6 +21,15 @@ Services
 
 `POST /retrieve/new` - Save the league info and scoring category information to the DB. Returns JSON of a FullLeague object.
 
+Ideas for uses
+--------------
+
+What the hell do I eventually want to do with this? Well, here are some brainstormed ideas:
+
+* Basic statistics: pitching points per week, hitting points per week, by position, by team, etc... all with some pretty D3 visualizations!
+* Bad Luck Brian: Determine which teams have bad luck against their opponents. Using simple points against isn't really a sufficient indicator since, if you're a good team, you'll naturally have fewer points against since you don't play yourself. However, we can take the average per week for each team, and detect by how much teams exceed that average against certain teams. The guy whose opponents typically exceed their average is the Bad Luck Brian of the league.
+* Where do I need help? Again, the differential between one of your positions and the rest of the league is a good indicator of where you need some aid. Might able to later expand this into figuring out who has excess at a certain position to perhaps facilitate trade ideas.
+
 Temporary DDL for the PostgreSQL database
 -----------------------------------------
 
