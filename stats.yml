@@ -9,7 +9,7 @@ database:
     driverClass: org.postgresql.Driver
     user: postgres
     password: test123
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432
     properties:
         charSet: UTF-8
-    maxWaitForConnection: 1s
+    maxWaitForConnection: 10s
