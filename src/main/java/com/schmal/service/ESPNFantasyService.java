@@ -2,6 +2,7 @@ package com.schmal.service;
 
 import com.schmal.domain.FullLeague;
 import com.schmal.domain.League;
+import com.schmal.domain.Matchup;
 import com.schmal.domain.ScoringCategory;
 import com.schmal.util.LinkUtil;
 import com.yammer.dropwizard.hibernate.HibernateBundle;
@@ -18,11 +19,14 @@ public class ESPNFantasyService
 
     private final TeamService teamService;
 
+    private final MatchupService matchupService;
+
     public ESPNFantasyService(HibernateBundle hibernateBundle)
     {
         leagueService = new LeagueService(hibernateBundle);
         categoryService = new ScoringCategoryService(hibernateBundle);
         teamService = new TeamService(hibernateBundle);
+        matchupService = new MatchupService(hibernateBundle);
     }
 
     public FullLeague saveLeague(String urlString) throws Exception
@@ -56,6 +60,26 @@ public class ESPNFantasyService
 
         return categoryService.saveScoringCategories(league.getKey(), leagueDoc, leagueURL);
 
+    }
+
+    public List<Matchup> saveAllMatchups(String urlString) throws Exception
+    {
+        List<Matchup> matchups = getMatchupsToParse(urlString);
+        return matchupService.saveMatchups(matchups);
+    }
+
+    public List<Matchup> getMatchupsToParse(String urlString) throws Exception
+    {
+        URL leagueURL = new URL(urlString);
+
+        Document leagueDoc = Jsoup.connect(leagueURL.toString()).get();
+
+        long espnID = getEspnID(leagueURL);
+        int year = getLeagueYear(leagueDoc);
+
+        League league = leagueService.saveLeague(leagueDoc, leagueURL, year, espnID);
+
+        return matchupService.getAllMatchups(league.getKey(), leagueDoc, leagueURL);
     }
 
     private int getLeagueYear(Document leagueDoc) throws Exception

@@ -1,8 +1,8 @@
 package com.schmal.resource;
 
 import com.schmal.domain.FullLeague;
+import com.schmal.domain.Matchup;
 import com.schmal.domain.ScoringCategory;
-import com.schmal.service.ESPNScraper;
 import com.schmal.service.ESPNFantasyService;
 import com.yammer.dropwizard.hibernate.HibernateBundle;
 import com.yammer.dropwizard.hibernate.UnitOfWork;
@@ -31,9 +31,10 @@ public class RetrieveResource
     @GET
     @Path("/todo")
     @Timed
-    public List<String> getMatchupsToParse()
+    @UnitOfWork
+    public List<Matchup> getMatchupsToParse() throws Exception
     {
-        return ESPNScraper.getMatchups(this.leagueURL);
+        return service.getMatchupsToParse(this.leagueURL);
     }
 
     @GET
@@ -52,5 +53,14 @@ public class RetrieveResource
     public FullLeague createNewLeague() throws Exception
     {
         return service.saveLeague(this.leagueURL);
+    }
+
+    @POST
+    @Path("/matchups/all")
+    @Timed
+    @UnitOfWork
+    public List<Matchup> createAllMatchups() throws Exception
+    {
+        return service.saveAllMatchups(this.leagueURL);
     }
 }

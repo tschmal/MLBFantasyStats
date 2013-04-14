@@ -19,6 +19,8 @@ Services
 
 `POST /retrieve/new` - Save the league info and scoring category information to the DB. Returns JSON of a FullLeague object.
 
+`POST /retrieve/matchups/all` - Save all matchups that were completed or are in progress to the database.
+
 Ideas for uses
 --------------
 
@@ -39,7 +41,7 @@ Until I can get the dropwizard-migrations and Liquibase behavior working correct
       year smallint NOT NULL,
       name text NOT NULL,
       url text NOT NULL,
-      CONSTRAINT league_pkey PRIMARY KEY (espn_id , year )
+      PRIMARY KEY (espn_id , year )
     );
 
     CREATE TABLE scoring
@@ -49,7 +51,7 @@ Until I can get the dropwizard-migrations and Liquibase behavior working correct
       category character varying(5) NOT NULL,
       category_type character(1) NOT NULL,
       points numeric NOT NULL,
-      CONSTRAINT scoring_pkey PRIMARY KEY (espn_id , year , category , category_type )
+      PRIMARY KEY (espn_id , year , category , category_type )
     );
 
     CREATE TABLE team
@@ -59,5 +61,16 @@ Until I can get the dropwizard-migrations and Liquibase behavior working correct
       espn_team_id smallint NOT NULL,
       owner text NOT NULL,
       name text NOT NULL,
-      CONSTRAINT team_pkey PRIMARY KEY (espn_id , year , espn_team_id )
+      PRIMARY KEY (espn_id , year , espn_team_id )
+    );
+    
+    CREATE TABLE matchup
+    (
+      espn_id integer NOT NULL,
+      year smallint NOT NULL,
+      home_espn_team_id smallint NOT NULL,
+      away_espn_team_id smallint NOT NULL,
+      start_date date NOT NULL,
+      end_date date NOT NULL,
+      PRIMARY KEY (espn_id , year , home_espn_team_id , start_date )
     );

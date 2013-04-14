@@ -1,6 +1,7 @@
 package com.schmal;
 
 import com.schmal.domain.League;
+import com.schmal.domain.Matchup;
 import com.schmal.domain.ScoringCategory;
 import com.schmal.domain.Team;
 import com.schmal.resource.RetrieveResource;
@@ -15,7 +16,7 @@ public class MLBFantasyStatsService extends Service<MLBFantasyStatsConfig>
 {
     private final HibernateBundle<MLBFantasyStatsConfig> hibernateBundle =
         new HibernateBundle<MLBFantasyStatsConfig>(
-            League.class, ScoringCategory.class, Team.class)
+            League.class, ScoringCategory.class, Team.class, Matchup.class)
         {
             @Override
             public DatabaseConfiguration getDatabaseConfiguration(MLBFantasyStatsConfig config)
