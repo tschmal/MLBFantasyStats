@@ -1,23 +1,10 @@
 apply plugin: 'java'
 apply plugin: 'pmd'
-apply plugin: com.smokejumperit.gradle.OneJarPlugin
 
 jar {
     manifest {
         attributes 'Main-Class': 'com.schmal.MLBFantasyStatsService'
     }
-}
-
-buildscript {
-
-    repositories {
-        mavenRepo url: 'http://repo.smokejumperit.com'
-    }
-
-    dependencies {
-        classpath group: 'com.smokejumperit', name: 'gradle-plugins', version: '0.8.2'
-    }
-
 }
 
 repositories {
@@ -33,8 +20,10 @@ dependencies {
 }
 
 pmdMain.ruleSets = ['basic', 'imports']
-oneJar.dependsOn 'pmdMain'
+pmdMain.dependsOn 'jar'
 
-task run(type: Exec, dependsOn: oneJar) {
-    commandLine = ['java', '-jar', 'build/libs/MLBFantasyStats-standalone.jar', 'server', 'stats.yml']
+task run(type: JavaExec, dependsOn: pmdMain) {
+    main = 'com.schmal.MLBFantasyStatsService'
+    classpath = sourceSets.main.runtimeClasspath
+    args 'server', 'stats.yml'
 }
