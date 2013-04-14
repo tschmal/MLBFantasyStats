@@ -6,17 +6,17 @@ import org.jsoup.select.Elements;
 
 public class LinkUtil
 {
-    public static String getLinkURL(Elements links, String text)
+    public static String getLinkURL(URL leagueURL, Elements links, String text)
     {
         for (Element link : links)
         {
             if (text.equals(link.ownText()))
             {
-                return link.attr("href");
+                return getDomain(leagueURL) + link.attr("href");
             }
         }
 
-        return "/FUCK";
+        return "NOPE";
     }
 
     public static String getLinkParameter(URL url, String parameter)
@@ -34,5 +34,10 @@ public class LinkUtil
         }
 
         return value;
+    }
+
+    public static String getDomain(URL url)
+    {
+        return url.getProtocol() + "://" + url.getHost();
     }
 }

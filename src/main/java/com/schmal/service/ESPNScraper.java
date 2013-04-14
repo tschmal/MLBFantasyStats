@@ -88,19 +88,14 @@ public class ESPNScraper
     private static Document getSchedule(Document leagueDoc) throws Exception
     {
         Elements leagueMenuLinks = leagueDoc.select("ul#games-subnav-links > li > a");
-        return Jsoup.connect(getDomain() + LinkUtil.getLinkURL(leagueMenuLinks, "Schedule")).get();
+        return Jsoup.connect(LinkUtil.getLinkURL(leagueURL, leagueMenuLinks, "Schedule")).get();
     }
 
     private static Document getBoxScore(Element matchup) throws Exception
     {
         Element boxLink = matchup.select("a").get(4);
-        return Jsoup.connect(getDomain() + boxLink.attr("href")).get();
+        return Jsoup.connect(LinkUtil.getDomain(leagueURL) + boxLink.attr("href")).get();
 
-    }
-
-    private static String getDomain()
-    {
-        return leagueURL.getProtocol() + "://" + leagueURL.getHost();
     }
 
     private static Date[] getWeekDateRange(Element week, String year)
