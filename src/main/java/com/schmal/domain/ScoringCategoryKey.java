@@ -1,21 +1,22 @@
 package com.schmal.domain;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 import lombok.Data;
-import lombok.NonNull;
 
 @Data
 @Embeddable
 public class ScoringCategoryKey implements Serializable
 {
-    @NonNull @Column(name = "league_id", nullable = false)
-    private long leagueID;
+    @Embedded @JsonUnwrapped
+    private final LeagueKey leagueKey;
 
-    @NonNull @Column(name = "category", nullable = false)
-    private String category;
+    @Column(name = "category", nullable = false)
+    private final String category;
 
-    @NonNull @Column(name = "category_type", nullable = false)
+    @Column(name = "category_type", nullable = false)
     private final char type;
 }

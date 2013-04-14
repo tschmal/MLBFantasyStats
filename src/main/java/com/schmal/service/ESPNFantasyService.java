@@ -4,6 +4,7 @@ import com.schmal.dao.LeagueDAO;
 import com.schmal.dao.ScoringCategoryDAO;
 import com.schmal.domain.FullLeague;
 import com.schmal.domain.League;
+import com.schmal.domain.LeagueKey;
 import com.schmal.domain.ScoringCategory;
 import com.schmal.domain.ScoringCategoryKey;
 import com.schmal.util.LinkUtil;
@@ -49,18 +50,8 @@ public class ESPNFantasyService
         int year = getLeagueYear(leagueDoc);
         long espnID = getEspnID(leagueURL);
 
-        League league;
-        League existingLeague = leagueDAO.getLeague(espnID, year);
-        if (existingLeague != null)
-        {
-            existingLeague.setName(leagueName);
-            existingLeague.setUrl(urlString);
-            league = leagueDAO.save(existingLeague);
-        }
-        else
-        {
-            league = leagueDAO.save(new League(espnID, leagueName, year, urlString));
-        }
+        League league = new League(new LeagueKey(espnID, year), leagueName, urlString);
+        leagueDAO.save(league);
         fullLeague.setLeague(league);
 
         List<ScoringCategory> categories = getScoringCategories(league, leagueDoc, leagueURL);
@@ -121,7 +112,7 @@ public class ESPNFantasyService
                 float categoryPoints = Float.parseFloat(statPoints.ownText());
 
                 ScoringCategory newCategory = new ScoringCategory(
-                    new ScoringCategoryKey(league.getID(), categoryName, type), categoryPoints);
+                    new ScoringCategoryKey(league.getKey(), categoryName, type), categoryPoints);
                 categories.add(newCategory);
             }
         }

@@ -17,13 +17,4 @@ public class LeagueDAO extends AbstractDAO<League>
     {
         return persist(league);
     }
-
-    public League getLeague(long espnID, int year)
-    {
-        List<League> leagues = list(namedQuery("checkExisting")
-            .setLong("espnID", espnID)
-            .setInteger("year", year));
-
-        return (leagues.size() > 0) ? leagues.get(0) : null;
-    }
 }
