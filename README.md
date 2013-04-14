@@ -35,19 +35,31 @@ Temporary DDL for the PostgreSQL database
 
 Until I can get the dropwizard-migrations and Liquibase behavior working correctly, I'm just going to put all the DDL here:
 
-    create table league (
-        espn_id integer not null,
-        year smallint not null,
-        name text not null,
-        url text not null,
-        primary key (espn_id, year)
+    CREATE TABLE league
+    (
+      espn_id integer NOT NULL,
+      year smallint NOT NULL,
+      name text NOT NULL,
+      url text NOT NULL,
+      CONSTRAINT league_pkey PRIMARY KEY (espn_id , year )
     );
 
-    create table scoring (
-        espn_id integer not null,
-        year smallint not null,
-        category varchar(5) not null,
-        category_type char(1) not null,
-        points numeric not null,
-        primary key (espn_id, year, category, category_type)
+    CREATE TABLE scoring
+    (
+      espn_id integer NOT NULL,
+      year smallint NOT NULL,
+      category character varying(5) NOT NULL,
+      category_type character(1) NOT NULL,
+      points numeric NOT NULL,
+      CONSTRAINT scoring_pkey PRIMARY KEY (espn_id , year , category , category_type )
+    );
+
+    CREATE TABLE team
+    (
+      espn_id integer NOT NULL,
+      year smallint NOT NULL,
+      espn_team_id smallint NOT NULL,
+      owner text NOT NULL,
+      name text NOT NULL,
+      CONSTRAINT team_pkey PRIMARY KEY (espn_id , year , espn_team_id )
     );
