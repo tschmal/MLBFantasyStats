@@ -2,11 +2,54 @@
 
 <head>
     <title>MLB Fantasy Stats</title>
+
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <style>
+    	body {
+    		margin-left: 30px;
+    		margin-top: 30px;
+    		font-family: 'Roboto', sans-serif;
+    	}
+
+    	.league-menu {
+    		display: inline-block;
+    		padding-right: 25px;
+    	}
+    </style>
 </head>
 
 <body>
 
-Yarrrrr!
+<h1>Project FAST</h1>
+Analytics for Fantasy Sports
+
+<hr>
+
+<div class="league-menu">
+	Fantasy Service:<br>
+	<select class="span2" id="serviceMenu">
+		<option>ESPN</option>
+		<option>Yahoo</option>
+		<option>CBS</option>
+	</select>
+</div>
+
+<div class="league-menu">
+	League:<br>
+	<select class="span2" id="leagueMenu">
+	</select>
+</div>
+
+<div class="league-menu">
+	Year:<br>
+	<select class="span2" id="yearMenu">
+	</select>
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+<script src="js/main.js"></script>
 
 </body>
 

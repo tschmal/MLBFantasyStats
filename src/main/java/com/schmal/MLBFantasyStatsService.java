@@ -1,10 +1,7 @@
 package com.schmal;
 
-import com.schmal.domain.League;
-import com.schmal.domain.Matchup;
-import com.schmal.domain.ScoringCategory;
-import com.schmal.domain.Team;
-import com.schmal.resource.RetrieveResource;
+import com.schmal.domain.*;
+import com.schmal.resource.LeagueResource;
 import com.yammer.dropwizard.assets.AssetsBundle;
 import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;
@@ -16,7 +13,8 @@ public class MLBFantasyStatsService extends Service<MLBFantasyStatsConfig>
 {
     private final HibernateBundle<MLBFantasyStatsConfig> hibernateBundle =
         new HibernateBundle<MLBFantasyStatsConfig>(
-            League.class, ScoringCategory.class, Team.class, Matchup.class)
+            League.class, Team.class, Result.class, Stat.class, Week.class, Matchup.class, Scoring.class,
+            Player.class, Position.class, Projection.class, Category.class)
         {
             @Override
             public DatabaseConfiguration getDatabaseConfiguration(MLBFantasyStatsConfig config)
@@ -41,6 +39,6 @@ public class MLBFantasyStatsService extends Service<MLBFantasyStatsConfig>
     @Override
     public void run(MLBFantasyStatsConfig config, Environment environment)
     {
-        environment.addResource(new RetrieveResource(hibernateBundle, config.getLeagueURL()));
+        environment.addResource(new LeagueResource(hibernateBundle));
     }
 }

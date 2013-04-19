@@ -14,28 +14,26 @@ import org.hibernate.annotations.GenericGenerator;
 
 @Data
 @Entity
-@Table(name = "team")
-public class Team
+@Table(name = "player")
+public class Player
 {
     @Id
-    @GeneratedValue(generator = "team-id-gen")
-    @GenericGenerator(name = "team-id-gen", strategy = "increment")
+    @GeneratedValue(generator = "player-id-gen")
+    @GenericGenerator(name = "player-id-gen", strategy = "increment")
     @Column(name = "id", nullable = false)
     private final long ID;
 
     @Column(name = "league_id", nullable = false)
     private final long leagueID;
 
-    @Column(name = "fantasy_team_id", nullable = false)
-    private final long fantasyTeamID;
-
     @Column(name = "name", nullable = false)
     private final String name;
 
-    @Column(name = "owner", nullable = false)
-    private final String owner;
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = "player_id")
+    private List<Position> positions;
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "team_id")
-    private List<Result> results;
+    @JoinColumn(name = "player_id")
+    private List<Projection> projections;
 }

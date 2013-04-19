@@ -1,5 +1,6 @@
 package com.schmal.domain;
 
+import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,28 +15,22 @@ import org.hibernate.annotations.GenericGenerator;
 
 @Data
 @Entity
-@Table(name = "team")
-public class Team
+@Table(name = "result")
+public class Result
 {
     @Id
-    @GeneratedValue(generator = "team-id-gen")
-    @GenericGenerator(name = "team-id-gen", strategy = "increment")
+    @GeneratedValue(generator = "result-id-gen")
+    @GenericGenerator(name = "result-id-gen", strategy = "increment")
     @Column(name = "id", nullable = false)
     private final long ID;
 
-    @Column(name = "league_id", nullable = false)
-    private final long leagueID;
+    @Column(name = "team_id", nullable = false)
+    private final long teamID;
 
-    @Column(name = "fantasy_team_id", nullable = false)
-    private final long fantasyTeamID;
-
-    @Column(name = "name", nullable = false)
-    private final String name;
-
-    @Column(name = "owner", nullable = false)
-    private final String owner;
+    @Column(name = "date", nullable = false)
+    private final Date date;
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "team_id")
-    private List<Result> results;
+    @JoinColumn(name = "result_id")
+    private List<Stat> stats;
 }

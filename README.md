@@ -13,13 +13,11 @@ Current usage
 Services
 --------
 
-`GET /retrieve/todo` - Sends back an array of match-up titles that need scraping.
+`GET /services/league/fantasyID/{fantasyID}` - Get all leagues with a particular fantasy ID (thus, all years of that league).
 
-`GET /retrieve/scoring` - Get the list of scoring categories and how much each is worth.
+`GET /services/league/service/{fantasyService}` - Get all leagues for a particular fantasy service.
 
-`POST /retrieve/new` - Save the league info and scoring category information to the DB. Returns JSON of a FullLeague object.
-
-`POST /retrieve/matchups/all` - Save all matchups that were completed or are in progress to the database.
+`POST /services/league` - Retrieve a league and save its basic information to the database. Requires URL parameters; see LeagueResource.
 
 Ideas for uses
 --------------
@@ -37,40 +35,11 @@ Until I can get the dropwizard-migrations and Liquibase behavior working correct
 
     CREATE TABLE league
     (
-      espn_id integer NOT NULL,
+      id integer NOT NULL,
+      fantasy_id integer NOT NULL,
       year smallint NOT NULL,
       name text NOT NULL,
-      url text NOT NULL,
-      PRIMARY KEY (espn_id , year )
-    );
-
-    CREATE TABLE scoring
-    (
-      espn_id integer NOT NULL,
-      year smallint NOT NULL,
-      category character varying(5) NOT NULL,
-      category_type character(1) NOT NULL,
-      points numeric NOT NULL,
-      PRIMARY KEY (espn_id , year , category , category_type )
-    );
-
-    CREATE TABLE team
-    (
-      espn_id integer NOT NULL,
-      year smallint NOT NULL,
-      espn_team_id smallint NOT NULL,
-      owner text NOT NULL,
-      name text NOT NULL,
-      PRIMARY KEY (espn_id , year , espn_team_id )
-    );
-    
-    CREATE TABLE matchup
-    (
-      espn_id integer NOT NULL,
-      year smallint NOT NULL,
-      home_espn_team_id smallint NOT NULL,
-      away_espn_team_id smallint NOT NULL,
-      start_date date NOT NULL,
-      end_date date NOT NULL,
-      PRIMARY KEY (espn_id , year , home_espn_team_id , start_date )
-    );
+      service text NOT NULL,
+      PRIMARY KEY (id),
+      UNIQUE (fantasy_id, year, service)
+    )

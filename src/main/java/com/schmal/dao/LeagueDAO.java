@@ -1,7 +1,6 @@
 package com.schmal.dao;
 
 import com.schmal.domain.League;
-import com.schmal.domain.LeagueKey;
 import com.yammer.dropwizard.hibernate.AbstractDAO;
 import java.util.List;
 import org.hibernate.SessionFactory;
@@ -18,11 +17,22 @@ public class LeagueDAO extends AbstractDAO<League>
         return persist(league);
     }
 
-    public League getLeague(long espnID, int year)
+    public League getLeague(long fantasyID, int year)
     {
         List<League> leagues = list(namedQuery("checkExisting")
-            .setParameter("key", new LeagueKey(espnID, year)));
+            .setParameter("fantasyID", fantasyID)
+            .setParameter("year", year));
 
         return (leagues.size() > 0) ? leagues.get(0) : null;
+    }
+
+    public List<League> getLeaguesByService(String fantasyService)
+    {
+        return list(namedQuery("getByService").setParameter("service", fantasyService));
+    }
+
+    public List<League> getLeaguesByFantasyID(long fantasyID)
+    {
+        return list(namedQuery("getByFantasyID").setParameter("fantasyID", fantasyID));
     }
 }
