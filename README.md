@@ -14,15 +14,19 @@ Services
 --------
 
 `GET /services/league/fantasyID/{fantasyID}`
+
 Get all leagues with a particular fantasy ID (thus, all years of that league).
 
 `GET /services/league/service/{fantasyService}`
+
 Get all leagues for a particular fantasy service.
 
 `POST /services/league`
+
 Retrieve a league and save its basic information to the database. Requires URL parameters; see LeagueResource.
 
 `POST /services/team`
+
 Retrieve basic team information for a league and save it to the database. Requires a URL parameter; see TeamResource.
 
 Ideas for uses
