@@ -1,6 +1,5 @@
 package com.schmal.domain;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -35,6 +34,10 @@ import org.hibernate.annotations.GenericGenerator;
     @NamedQuery(
         name = "getByFantasyID",
         query = "select L from League L where L.fantasyID = :fantasyID"
+    ),
+    @NamedQuery(
+        name = "getByID",
+        query = "select L from League L where L.ID = :leagueID"
     )
 })
 public class League
@@ -65,30 +68,25 @@ public class League
     @Getter @Setter
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "league_id")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Team> teams;
 
     @Getter @Setter
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "league_id")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Week> weeks;
 
     @Getter @Setter
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "league_id")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Category> categories;
 
     @Getter @Setter
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "league_id")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Scoring> scoring;
 
     @Getter @Setter
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "league_id")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Player> players;
 }

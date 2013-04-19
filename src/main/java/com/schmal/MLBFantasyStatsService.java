@@ -1,7 +1,7 @@
 package com.schmal;
 
 import com.schmal.domain.*;
-import com.schmal.resource.LeagueResource;
+import com.schmal.resource.*;
 import com.yammer.dropwizard.assets.AssetsBundle;
 import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;
@@ -40,5 +40,6 @@ public class MLBFantasyStatsService extends Service<MLBFantasyStatsConfig>
     public void run(MLBFantasyStatsConfig config, Environment environment)
     {
         environment.addResource(new LeagueResource(hibernateBundle));
+        environment.addResource(new TeamResource(hibernateBundle));
     }
 }

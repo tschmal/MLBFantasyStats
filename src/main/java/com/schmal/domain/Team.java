@@ -7,34 +7,53 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.GeneratedValue;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
-@Data
+@NoArgsConstructor
+@RequiredArgsConstructor
 @Entity
 @Table(name = "team")
+@NamedQueries({
+    @NamedQuery(
+        name = "getByLeagueID",
+        query = "select T from Team T where T.leagueID = :leagueID"
+    )
+})
 public class Team
 {
     @Id
+    @Getter @Setter
     @GeneratedValue(generator = "team-id-gen")
     @GenericGenerator(name = "team-id-gen", strategy = "increment")
     @Column(name = "id", nullable = false)
-    private final long ID;
+    private long ID;
 
+    @NonNull @Getter @Setter
     @Column(name = "league_id", nullable = false)
-    private final long leagueID;
+    private long leagueID;
 
+    @NonNull @Getter @Setter
     @Column(name = "fantasy_team_id", nullable = false)
-    private final long fantasyTeamID;
+    private int fantasyTeamID;
 
+    @NonNull @Getter @Setter
     @Column(name = "name", nullable = false)
-    private final String name;
+    private String name;
 
+    @NonNull @Getter @Setter
     @Column(name = "owner", nullable = false)
-    private final String owner;
+    private String owner;
 
+    @Getter @Setter
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "team_id")
     private List<Result> results;

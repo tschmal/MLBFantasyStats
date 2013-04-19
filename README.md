@@ -13,11 +13,17 @@ Current usage
 Services
 --------
 
-`GET /services/league/fantasyID/{fantasyID}` - Get all leagues with a particular fantasy ID (thus, all years of that league).
+`GET /services/league/fantasyID/{fantasyID}`
+Get all leagues with a particular fantasy ID (thus, all years of that league).
 
-`GET /services/league/service/{fantasyService}` - Get all leagues for a particular fantasy service.
+`GET /services/league/service/{fantasyService}`
+Get all leagues for a particular fantasy service.
 
-`POST /services/league` - Retrieve a league and save its basic information to the database. Requires URL parameters; see LeagueResource.
+`POST /services/league`
+Retrieve a league and save its basic information to the database. Requires URL parameters; see LeagueResource.
+
+`POST /services/team`
+Retrieve basic team information for a league and save it to the database. Requires a URL parameter; see TeamResource.
 
 Ideas for uses
 --------------
@@ -42,4 +48,15 @@ Until I can get the dropwizard-migrations and Liquibase behavior working correct
       service text NOT NULL,
       PRIMARY KEY (id),
       UNIQUE (fantasy_id, year, service)
+    )
+
+    CREATE TABLE team
+    (
+      id integer NOT NULL,
+      league_id integer NOT NULL,
+      fantasy_team_id smallint NOT NULL,
+      name text NOT NULL,
+      owner text NOT NULL,
+      PRIMARY KEY (id),
+      UNIQUE (league_id, fantasy_team_id)
     )

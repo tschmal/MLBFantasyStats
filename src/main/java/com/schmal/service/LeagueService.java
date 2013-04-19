@@ -2,11 +2,10 @@ package com.schmal.service;
 
 import com.schmal.dao.LeagueDAO;
 import com.schmal.domain.League;
+import com.schmal.util.FantasyURLBuilder;
 import com.yammer.dropwizard.hibernate.HibernateBundle;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -14,15 +13,10 @@ import org.jsoup.nodes.Document;
 @Slf4j
 public class LeagueService
 {
-    private final Map<String,String> fantasyServiceMap;
-
     private final LeagueDAO dao;
 
     public LeagueService(HibernateBundle hibernateBundle)
     {
-        fantasyServiceMap = new HashMap<String,String>();
-        fantasyServiceMap.put("espn", "http://games.espn.go.com/flb/leagueoffice?leagueId=%s&seasonId=%s");
-
         dao = new LeagueDAO(hibernateBundle.getSessionFactory());
     }
 
@@ -36,28 +30,41 @@ public class LeagueService
         return dao.getLeaguesByFantasyID(fantasyID);
     }
 
+    public League getLeagueByID(long leagueID) throws Exception
+    {
+        return dao.getLeague(leagueID);
+    }
+
     public League createNewLeague(long fantasyLeagueID, int year, String fantasyService) throws Exception
     {
-        URL leagueURL = getLeagueURL(fantasyLeagueID, year, fantasyService);
+        URL leagueURL = FantasyURLBuilder.getLeagueURL(fantasyLeagueID, year, fantasyService);
+
+        League league;
+        switch (fantasyService.toLowerCase())
+        {
+            case "espn":
+                league = createESPNLeague(leagueURL, fantasyLeagueID, year, fantasyService);
+                break;
+            default:
+                league = null;
+                break;
+        }
+
+        if (league != null)
+        {
+            dao.save(league);
+        }
+
+        return league;
+    }
+
+    private League createESPNLeague(URL leagueURL, long fantasyLeagueID, int year, String fantasyService)
+        throws Exception
+    {
         Document leagueDoc = Jsoup.connect(leagueURL.toString()).get();
 
         String leagueName = leagueDoc.select(".league-team-names > h1").first().attr("title");
-        League league = getLeague(fantasyLeagueID, year, leagueName, fantasyService);
 
-        return dao.save(league);
-    }
-
-    private URL getLeagueURL(long fantasyLeagueID, int year, String fantasyService) throws Exception
-    {
-        String leagueURL = String.format(
-            fantasyServiceMap.get(fantasyService.toLowerCase()),
-            String.valueOf(fantasyLeagueID),
-            String.valueOf(year));
-        return new URL(leagueURL);
-    }
-
-    private League getLeague(long fantasyLeagueID, int year, String leagueName, String fantasyService) throws Exception
-    {
         League league = dao.getLeague(fantasyLeagueID, year);
         if (league == null)
         {
