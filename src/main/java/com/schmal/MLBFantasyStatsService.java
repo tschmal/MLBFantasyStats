@@ -41,5 +41,6 @@ public class MLBFantasyStatsService extends Service<MLBFantasyStatsConfig>
     {
         environment.addResource(new LeagueResource(hibernateBundle));
         environment.addResource(new TeamResource(hibernateBundle));
+        environment.addResource(new WeekResource(hibernateBundle));
     }
 }
