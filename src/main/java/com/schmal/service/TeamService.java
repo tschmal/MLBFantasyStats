@@ -35,7 +35,7 @@ public class TeamService
         League league = leagueService.getLeagueByID(leagueID);
         URL leagueURL = FantasyURLBuilder.getLeagueURL(league);
 
-        Map<Integer,Team> teamIDMap = buildTeamIDMap(leagueID);
+        Map<Integer,Team> teamIDMap = buildTeamIDMap(league);
 
         List<Team> teams;
         switch (league.getService().toLowerCase())
@@ -56,11 +56,11 @@ public class TeamService
         return teams;
     }
 
-    private Map<Integer,Team> buildTeamIDMap(long leagueID) throws Exception
+    public Map<Integer,Team> buildTeamIDMap(League league) throws Exception
     {
         Map<Integer,Team> teamIDMap = new HashMap<Integer,Team>();
 
-        List<Team> teams = dao.getTeamsByLeagueID(leagueID);
+        List<Team> teams = dao.getTeamsByLeagueID(league);
         for (Team team : teams)
         {
             teamIDMap.put(team.getFantasyTeamID(), team);
@@ -101,7 +101,7 @@ public class TeamService
                 Team existingTeam = teamIDMap.get(teamID);
                 if (existingTeam == null)
                 {
-                    newTeam = new Team(league.getID(), teamID, name, owner);
+                    newTeam = new Team(league, teamID, name, owner);
                 }
                 else
                 {

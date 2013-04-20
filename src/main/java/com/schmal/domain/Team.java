@@ -1,5 +1,6 @@
 package com.schmal.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,7 +27,7 @@ import org.hibernate.annotations.GenericGenerator;
 @NamedQueries({
     @NamedQuery(
         name = "getByLeagueID",
-        query = "select T from Team T where T.leagueID = :leagueID"
+        query = "select T from Team T where T.league = :league"
     )
 })
 public class Team
@@ -38,8 +40,9 @@ public class Team
     private long ID;
 
     @NonNull @Getter @Setter
-    @Column(name = "league_id", nullable = false)
-    private long leagueID;
+    @JsonIgnore
+    @OneToOne
+    private League league;
 
     @NonNull @Getter @Setter
     @Column(name = "fantasy_team_id", nullable = false)

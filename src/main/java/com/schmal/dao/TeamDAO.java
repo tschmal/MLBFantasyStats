@@ -1,5 +1,6 @@
 package com.schmal.dao;
 
+import com.schmal.domain.League;
 import com.schmal.domain.Team;
 import com.yammer.dropwizard.hibernate.AbstractDAO;
 import java.util.List;
@@ -22,8 +23,8 @@ public class TeamDAO extends AbstractDAO<Team>
         return teams;
     }
 
-    public List<Team> getTeamsByLeagueID(long leagueID)
+    public List<Team> getTeamsByLeagueID(League league)
     {
-        return list(namedQuery("getByLeagueID").setParameter("leagueID", leagueID));
+        return list(namedQuery("getByLeagueID").setParameter("league", league));
     }
 }

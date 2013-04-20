@@ -66,13 +66,11 @@ public class League
     private String service;
 
     @Getter @Setter
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "league_id")
+    @OneToMany(mappedBy = "league", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Team> teams;
 
     @Getter @Setter
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "league_id")
+    @OneToMany(mappedBy = "league", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Week> weeks;
 
     @Getter @Setter

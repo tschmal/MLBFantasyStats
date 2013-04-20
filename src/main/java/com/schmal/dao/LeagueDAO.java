@@ -38,6 +38,6 @@ public class LeagueDAO extends AbstractDAO<League>
 
     public League getLeague(long leagueID)
     {
-        return list(namedQuery("getByID").setParameter("leagueID", leagueID)).get(0);
+        return uniqueResult(namedQuery("getByID").setParameter("leagueID", leagueID));
     }
 }
