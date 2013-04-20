@@ -29,6 +29,10 @@ Retrieve a league and save its basic information to the database. Requires URL p
 
 Retrieve basic team information for a league and save it to the database. Requires a URL parameter; see TeamResource.
 
+`POST /services/week`
+
+Retrieve schedule information for a league and save it to the database. Requires a URL parameter; see WeekResource.
+
 Ideas for uses
 --------------
 
@@ -64,3 +68,23 @@ Until I can get the dropwizard-migrations and Liquibase behavior working correct
       PRIMARY KEY (id),
       UNIQUE (league_id, fantasy_team_id)
     )
+    
+    CREATE TABLE week
+    (
+      id integer NOT NULL,
+      league_id integer NOT NULL,
+      start_date date NOT NULL,
+      end_date date NOT NULL,
+      PRIMARY KEY (id),
+      UNIQUE (league_id , start_date , end_date )
+    );
+    
+    CREATE TABLE matchup
+    (
+      id integer NOT NULL,
+      week_id integer REFERENCES week(id) ON DELETE CASCADE NOT NULL,
+      home_team_id smallint NOT NULL,
+      away_team_id smallint NOT NULL,
+      PRIMARY KEY (id),
+      UNIQUE (week_id, home_team_id, away_team_id)
+    );
