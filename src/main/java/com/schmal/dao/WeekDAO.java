@@ -8,28 +8,26 @@ import org.hibernate.SessionFactory;
 
 public class WeekDAO extends AbstractDAO<Week>
 {
+    private final LeagueDAO leagueDAO;
+
     public WeekDAO(SessionFactory factory)
     {
         super(factory);
+
+        leagueDAO = new LeagueDAO(factory);
     }
 
-    public List<Week> save(List<Week> weeks)
+    public List<Week> save(League league, List<Week> weeks)
     {
-        if (weeks.size() > 0)
-        {
-            deleteWeeks(weeks.get(0).getLeague());
-        }
+        // Delete everything.
+        league.getWeeks().clear();
+        leagueDAO.save(league);
+        currentSession().flush();
 
-        for (Week week : weeks)
-        {
-            persist(week);
-        }
+        // Insert all the new Weeks.
+        league.getWeeks().addAll(weeks);
+        leagueDAO.save(league);
 
-        return weeks;
-    }
-
-    public void deleteWeeks(League league)
-    {
-        namedQuery("deleteByLeagueID").setParameter("league", league).executeUpdate();
+        return league.getWeeks();
     }
 }

@@ -1,5 +1,6 @@
 package com.schmal.service;
 
+import com.schmal.dao.LeagueDAO;
 import com.schmal.dao.WeekDAO;
 import com.schmal.domain.League;
 import com.schmal.domain.Matchup;
@@ -27,6 +28,8 @@ public class WeekService
 {
     private final WeekDAO dao;
 
+    private final LeagueDAO leagueDAO;
+
     private final LeagueService leagueService;
 
     private final TeamService teamService;
@@ -38,6 +41,7 @@ public class WeekService
     public WeekService(HibernateBundle hibernateBundle)
     {
         dao = new WeekDAO(hibernateBundle.getSessionFactory());
+        leagueDAO = new LeagueDAO(hibernateBundle.getSessionFactory());
         teamService = new TeamService(hibernateBundle);
         leagueService = new LeagueService(hibernateBundle);
     }
@@ -58,12 +62,7 @@ public class WeekService
                 break;
         }
 
-        if (weeks.size() > 0)
-        {
-            dao.save(weeks);
-        }
-
-        return weeks;
+        return dao.save(league, weeks);
     }
 
     private List<Week> createESPNWeeks(

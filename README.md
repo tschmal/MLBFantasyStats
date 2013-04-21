@@ -72,7 +72,7 @@ Until I can get the dropwizard-migrations and Liquibase behavior working correct
     CREATE TABLE week
     (
       id integer NOT NULL,
-      league_id integer NOT NULL,
+      league_id integer REFERENCES league(id) ON DELETE CASCADE NOT NULL,
       start_date date NOT NULL,
       end_date date NOT NULL,
       PRIMARY KEY (id),

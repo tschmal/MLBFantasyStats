@@ -8,11 +8,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -22,14 +21,9 @@ import org.hibernate.annotations.GenericGenerator;
 
 @NoArgsConstructor
 @RequiredArgsConstructor
+@EqualsAndHashCode(exclude = {"ID", "matchups"})
 @Entity
 @Table(name = "week")
-@NamedQueries({
-    @NamedQuery(
-        name = "deleteByLeagueID",
-        query = "delete from Week where league = :league"
-    )
-})
 public class Week
 {
     @Id

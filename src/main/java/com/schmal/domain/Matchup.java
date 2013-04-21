@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -16,6 +17,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 @NoArgsConstructor
 @RequiredArgsConstructor
+@EqualsAndHashCode(exclude = {"ID"})
 @Entity
 @Table(name = "matchup")
 public class Matchup
