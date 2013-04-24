@@ -74,14 +74,8 @@ public class League
     private List<Week> weeks;
 
     @Getter @Setter
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "league_id")
+    @OneToMany(mappedBy = "league", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Category> categories;
-
-    @Getter @Setter
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "league_id")
-    private List<Scoring> scoring;
 
     @Getter @Setter
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)

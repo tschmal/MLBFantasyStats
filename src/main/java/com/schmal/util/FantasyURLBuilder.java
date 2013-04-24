@@ -13,6 +13,7 @@ public class FantasyURLBuilder
     {
         fantasyServiceMap.put("espn", "http://games.espn.go.com/flb/leagueoffice?leagueId=%s&seasonId=%s");
         fantasyServiceMap.put("espn:schedule", "http://games.espn.go.com/flb/schedule?leagueId=%s&seasonId=%s");
+        fantasyServiceMap.put("espn:settings", "http://games.espn.go.com/flb/leaguesetup/settings?leagueId=%s&seasonId=%s");
     }
 
     public static URL getLeagueURL(League league) throws Exception
@@ -37,6 +38,15 @@ public class FantasyURLBuilder
     {
         String scheduleURL = String.format(
             fantasyServiceMap.get(league.getService().toLowerCase() + ":schedule"),
+            league.getFantasyID(),
+            String.valueOf(league.getYear()));
+        return new URL(scheduleURL);
+    }
+
+    public static URL getSettingsURL(League league) throws Exception
+    {
+        String scheduleURL = String.format(
+            fantasyServiceMap.get(league.getService().toLowerCase() + ":settings"),
             league.getFantasyID(),
             String.valueOf(league.getYear()));
         return new URL(scheduleURL);
