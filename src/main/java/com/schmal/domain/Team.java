@@ -6,7 +6,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.GeneratedValue;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -25,10 +24,8 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Table(name = "team")
 @NamedQueries({
-    @NamedQuery(
-        name = "getByLeagueID",
-        query = "select T from Team T where T.league = :league"
-    )
+    @NamedQuery(name = "byLeague", query = "from Team where league = :league"),
+    @NamedQuery(name = "byID", query = "from Team where ID = :teamID")
 })
 public class Team
 {
@@ -57,7 +54,6 @@ public class Team
     private String owner;
 
     @Getter @Setter
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "team_id")
+    @OneToMany(mappedBy = "team", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Result> results;
 }

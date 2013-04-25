@@ -1,6 +1,7 @@
 package com.schmal.util;
 
 import com.schmal.domain.League;
+import com.schmal.domain.Team;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +15,8 @@ public class FantasyURLBuilder
         fantasyServiceMap.put("espn", "http://games.espn.go.com/flb/leagueoffice?leagueId=%s&seasonId=%s");
         fantasyServiceMap.put("espn:schedule", "http://games.espn.go.com/flb/schedule?leagueId=%s&seasonId=%s");
         fantasyServiceMap.put("espn:settings", "http://games.espn.go.com/flb/leaguesetup/settings?leagueId=%s&seasonId=%s");
+        fantasyServiceMap.put("espn:scoringperiod",
+                              "http://games.espn.go.com/flb/clubhouse?leagueId=%s&seasonId=%s&teamId=%s&scoringPeriodId=%s");
     }
 
     public static URL getLeagueURL(League league) throws Exception
@@ -45,10 +48,21 @@ public class FantasyURLBuilder
 
     public static URL getSettingsURL(League league) throws Exception
     {
-        String scheduleURL = String.format(
+        String settingsURL = String.format(
             fantasyServiceMap.get(league.getService().toLowerCase() + ":settings"),
             league.getFantasyID(),
             String.valueOf(league.getYear()));
-        return new URL(scheduleURL);
+        return new URL(settingsURL);
+    }
+
+    public static URL getScoringPeriodURL(Team team, int scoringPeriod) throws Exception
+    {
+        String scoringPeriodURL = String.format(
+            fantasyServiceMap.get(team.getLeague().getService().toLowerCase() + ":scoringperiod"),
+            team.getLeague().getFantasyID(),
+            String.valueOf(team.getLeague().getYear()),
+            String.valueOf(team.getFantasyTeamID()),
+            String.valueOf(scoringPeriod));
+        return new URL(scoringPeriodURL);
     }
 }

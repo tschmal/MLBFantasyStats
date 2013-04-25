@@ -25,6 +25,11 @@ public class TeamDAO extends AbstractDAO<Team>
 
     public List<Team> getTeamsByLeagueID(League league)
     {
-        return list(namedQuery("getByLeagueID").setParameter("league", league));
+        return list(namedQuery("byLeague").setParameter("league", league));
+    }
+
+    public Team getByTeamID(long teamID)
+    {
+        return uniqueResult(namedQuery("byID").setParameter("teamID", teamID));
     }
 }

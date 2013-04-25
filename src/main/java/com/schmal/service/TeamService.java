@@ -30,6 +30,11 @@ public class TeamService
         leagueService = new LeagueService(hibernateBundle);
     }
 
+    public Team getByTeamID(long teamID) throws Exception
+    {
+        return dao.getByTeamID(teamID);
+    }
+
     public List<Team> createTeams(long leagueID) throws Exception
     {
         League league = leagueService.getLeagueByID(leagueID);
