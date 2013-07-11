@@ -65,7 +65,7 @@ public class Result
             {
                 float ip = stat.getValue() * 10;
                 int outs = Math.round(ip % 10) + Math.round(ip / 10) * 3;
-                score += outs * Math.round(stat.getCategory().getPoints() / 3);
+                score += outs * stat.getCategory().getPoints() / 3;
                 continue;
             }
 

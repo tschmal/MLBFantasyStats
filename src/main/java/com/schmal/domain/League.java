@@ -77,6 +77,7 @@ public class League
 
     @Getter @Setter
     @OneToMany(mappedBy = "league", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OrderBy("startPeriod ASC")
     private List<Week> weeks;
 
     @Getter @Setter
