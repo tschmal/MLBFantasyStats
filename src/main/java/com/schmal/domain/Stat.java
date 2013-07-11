@@ -35,16 +35,7 @@ public class Stat
     @NonNull @Getter @Setter
     @JsonIgnore
     @OneToOne
-    private Player player;
-
-    @NonNull @Getter @Setter
-    @JsonIgnore
-    @OneToOne
     private Category category;
-
-    @NonNull @Getter @Setter
-    @Column(name = "slot", nullable = false)
-    private String slot;
 
     @NonNull @Getter @Setter
     @Column(name = "value", nullable = false)

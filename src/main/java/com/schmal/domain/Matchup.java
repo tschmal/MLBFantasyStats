@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,9 +37,15 @@ public class Matchup
 
     @NonNull @Getter @Setter
     @Column(name = "home_team_id", nullable = false)
-    private long homeTeamID;
+    private int homeTeamID;
 
     @NonNull @Getter @Setter
     @Column(name = "away_team_id", nullable = false)
-    private long awayTeamID;
+    private int awayTeamID;
+
+    @Transient @Getter @Setter
+    private float homeTeamScore;
+
+    @Transient @Getter @Setter
+    private float awayTeamScore;
 }

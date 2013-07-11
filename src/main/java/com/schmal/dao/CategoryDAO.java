@@ -3,18 +3,22 @@ package com.schmal.dao;
 import com.schmal.domain.Category;
 import com.schmal.domain.League;
 import com.yammer.dropwizard.hibernate.AbstractDAO;
+import com.yammer.dropwizard.hibernate.HibernateBundle;
 import java.util.List;
-import org.hibernate.SessionFactory;
+import org.hibernate.Query;
 
 public class CategoryDAO extends AbstractDAO<Category>
 {
     private final LeagueDAO leagueDAO;
 
-    public CategoryDAO(SessionFactory factory)
-    {
-        super(factory);
+    private final HibernateBundle hibernateBundle;
 
-        leagueDAO = new LeagueDAO(factory);
+    public CategoryDAO(HibernateBundle hibernateBundle)
+    {
+        super(hibernateBundle.getSessionFactory());
+
+        leagueDAO = new LeagueDAO(hibernateBundle.getSessionFactory());
+        this.hibernateBundle = hibernateBundle;
     }
 
     public List<Category> save(League league, List<Category> categories)
@@ -29,5 +33,22 @@ public class CategoryDAO extends AbstractDAO<Category>
         leagueDAO.save(league);
 
         return league.getCategories();
+    }
+
+    public List<Category> getAllCategories()
+    {
+        return list(namedQuery("allCategories"));
+    }
+
+    public Category getSingleCategory(League league, String category, char categoryType)
+    {
+        Query query = namedQuery("singleCategory")
+            .setParameter("league", league)
+            .setParameter("category", category)
+            .setParameter("categoryType", categoryType);
+
+        List<Category> categories = query.list();
+
+        return categories.get(0);
     }
 }

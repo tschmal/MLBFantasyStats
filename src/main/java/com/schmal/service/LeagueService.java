@@ -35,6 +35,16 @@ public class LeagueService
         return dao.getLeague(leagueID);
     }
 
+    public League getLeague(long fantasyID, int year) throws Exception
+    {
+        return dao.getLeague(fantasyID, year);
+    }
+
+    public void deleteLeague(long leagueID) throws Exception
+    {
+        dao.deleteLeague(leagueID);
+    }
+
     public League createNewLeague(long fantasyLeagueID, int year, String fantasyService) throws Exception
     {
         URL leagueURL = FantasyURLBuilder.getLeagueURL(fantasyLeagueID, year, fantasyService);

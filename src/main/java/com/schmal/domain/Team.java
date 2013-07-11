@@ -1,7 +1,9 @@
 package com.schmal.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +14,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -53,7 +56,42 @@ public class Team
     @Column(name = "owner", nullable = false)
     private String owner;
 
-    @Getter @Setter
+    @Getter @Setter @JsonIgnore
     @OneToMany(mappedBy = "team", orphanRemoval = true, cascade = CascadeType.ALL)
-    private List<Result> results;
+    private List<Lineup> lineups;
+
+    @Transient @JsonIgnore
+    private Map<ScoringPeriod,Lineup> lineupMap;
+
+    public void addLineup(Lineup lineup)
+    {
+        lineups.add(lineup);
+
+        if (lineupMap == null)
+        {
+            createLineupMap();
+        }
+
+        lineupMap.put(lineup.getScoringPeriod(), lineup);
+    }
+
+    public Lineup getLineup(ScoringPeriod period)
+    {
+        if (lineupMap == null)
+        {
+            createLineupMap();
+        }
+
+        return lineupMap.get(period);
+    }
+
+    private void createLineupMap()
+    {
+        lineupMap = new HashMap<ScoringPeriod,Lineup>();
+
+        for (Lineup lineup : getLineups())
+        {
+            lineupMap.put(lineup.getScoringPeriod(), lineup);
+        }
+    }
 }

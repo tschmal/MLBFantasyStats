@@ -17,15 +17,6 @@ public class LeagueDAO extends AbstractDAO<League>
         return persist(league);
     }
 
-    public League getLeague(long fantasyID, int year)
-    {
-        List<League> leagues = list(namedQuery("checkExisting")
-            .setParameter("fantasyID", fantasyID)
-            .setParameter("year", year));
-
-        return (leagues.size() > 0) ? leagues.get(0) : null;
-    }
-
     public List<League> getLeaguesByService(String fantasyService)
     {
         return list(namedQuery("getByService").setParameter("service", fantasyService));
@@ -39,5 +30,18 @@ public class LeagueDAO extends AbstractDAO<League>
     public League getLeague(long leagueID)
     {
         return uniqueResult(namedQuery("getByID").setParameter("leagueID", leagueID));
+    }
+
+    public League getLeague(long fantasyID, int year)
+    {
+        return uniqueResult(namedQuery("get")
+            .setParameter("fantasyID", fantasyID)
+            .setParameter("year", year));
+    }
+
+    public void deleteLeague(long leagueID)
+    {
+        League league = getLeague(leagueID);
+        currentSession().delete(league);
     }
 }

@@ -1,0 +1,269 @@
+package com.schmal.service;
+
+import com.schmal.cache.*;
+import com.schmal.dao.ResultDAO;
+import com.schmal.domain.Category;
+import com.schmal.domain.League;
+import com.schmal.domain.Player;
+import com.schmal.domain.Result;
+import com.schmal.domain.Stat;
+import com.schmal.domain.Team;
+import com.schmal.util.FantasyURLBuilder;
+import com.schmal.util.LinkUtil;
+import com.yammer.dropwizard.hibernate.HibernateBundle;
+import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+@Slf4j
+public class ResultService
+{
+    private final ResultDAO dao;
+
+    private final TeamService teamService;
+
+    private final HibernateBundle hibernateBundle;
+
+    public ResultService(HibernateBundle hibernateBundle)
+    {
+        dao = new ResultDAO(hibernateBundle.getSessionFactory());
+        teamService = new TeamService(hibernateBundle);
+        this.hibernateBundle = hibernateBundle;
+    }
+
+    public List<Result> updateNewResults(long teamID) throws Exception
+    {
+        List<Result> results = new ArrayList<Result>();
+
+        Team team = teamService.getByTeamID(teamID);
+        Result latestResult = dao.getLatestResult(team);
+
+        int scoringPeriod = (latestResult == null) ? 1 : latestResult.getScoringPeriod();
+        URL scoringPeriodURL = FantasyURLBuilder.getScoringPeriodURL(team.getLeague(), scoringPeriod, 1, 0);
+
+        // Update/create the latest result just in case.
+        if (latestResult == null)
+        {
+            Document scoringPeriodDoc = Jsoup.connect(scoringPeriodURL.toString()).get();
+            latestResult = createResult(scoringPeriodDoc, scoringPeriodURL, team);
+            results.add(latestResult);
+        }
+        else
+        {
+            List<Result> latestTwoResults = dao.getLatestTwoResults(team, latestResult.getScoringPeriod());
+            updateResults(latestTwoResults);
+            results.addAll(latestTwoResults);
+        }
+
+        // Now do the result of the incomplete days.
+        Calendar curDate = Calendar.getInstance();
+        curDate.setTime(latestResult.getDate());
+        Date today = new Date();
+        scoringPeriod++;
+        curDate.add(Calendar.DATE, 1);
+        while (curDate.getTime().compareTo(today) < 0)
+        {
+            scoringPeriodURL = FantasyURLBuilder.getScoringPeriodURL(team.getLeague(), scoringPeriod, 1, 0);
+            Document scoringPeriodDoc = Jsoup.connect(scoringPeriodURL.toString()).get();
+
+            Result newResult = createResult(scoringPeriodDoc, scoringPeriodURL, team);
+            setStats(newResult, scoringPeriodDoc);
+
+            results.add(newResult);
+
+            scoringPeriod++;
+            curDate.add(Calendar.DATE, 1);
+        }
+
+        return dao.save(results);
+    }
+
+    private Result createResult(Document scoringPeriodDoc, URL scoringPeriodURL, Team team) throws Exception
+    {
+        int scoringPeriod = Integer.parseInt(LinkUtil.getLinkParameter(scoringPeriodURL, "scoringPeriodId"));
+
+        return new Result(team, getScoringDate(scoringPeriodDoc, team), scoringPeriod);
+    }
+
+    private Date getScoringDate(Document scoringPeriodDoc, Team team) throws Exception
+    {
+        int year = team.getLeague().getYear();
+
+        Element dateCell = scoringPeriodDoc.select(".playertableSectionHeader").first().child(2);
+        String[] dateComponents = dateCell.ownText().split(" ");
+
+        DateFormat formatter = new SimpleDateFormat("yyyy-MMM-dd");
+        return formatter.parse(year + "-" + dateComponents[0] + "-" + dateComponents[1]);
+    }
+
+    private void updateResults(List<Result> results) throws Exception
+    {
+        for (Result result : results)
+        {
+            URL scoringPeriodURL = FantasyURLBuilder.getScoringPeriodURL(
+                result.getTeam().getLeague(), result.getScoringPeriod(), 1, 0);
+
+            Document scoringPeriodDoc = Jsoup.connect(scoringPeriodURL.toString()).get();
+
+            if (periodIsScored(scoringPeriodDoc))
+            {
+                setStats(result, scoringPeriodDoc);
+            }
+        }
+    }
+
+    private void setStats(Result result, Document scoringPeriodDoc)
+    {
+        if (result.getStats() == null)
+        {
+            result.setStats(new ArrayList<Stat>());
+        }
+
+        Elements playerTables = scoringPeriodDoc.select(".playerTableTable");
+        for (Element playerTable : playerTables)
+        {
+            Map<Integer,Category> childToCategory = buildChildToCategoryMap(result.getTeam(), playerTable);
+            Map<Player,Map<Category,Stat>> statMap = buildStatMap(result.getStats());
+
+            Elements playerRows = playerTable.select(".pncPlayerRow");
+            for (Element playerRow : playerRows)
+            {
+                if (playerRow.hasClass("emptyRow"))
+                {
+                    continue;
+                }
+
+                String slot = playerRow.select(".playerSlot").first().ownText();
+
+                Player player = getPlayer(result.getTeam().getLeague(), playerRow);
+                Map<Category,Stat> catMap = (statMap.get(player) == null) ?
+                    new HashMap<Category,Stat>() : statMap.get(player);
+
+                int statNum = 0;
+                Elements statColumns = playerRow.select(".playertableStat");
+                for (Element statColumn : statColumns)
+                {
+                    if (statColumn.hasClass("appliedPoints") || statColumn.ownText().indexOf("/") > 0)
+                    {
+                        continue;
+                    }
+
+                    if ("--".equals(statColumn.ownText()) || "0".equals(statColumn.ownText()))
+                    {
+                        statNum++;
+                        continue;
+                    }
+
+                    float statValue = Float.parseFloat(statColumn.ownText());
+
+                    Category category = childToCategory.get(statNum);
+                    Stat stat = catMap.get(category);
+                    if (stat == null)
+                    {
+                        stat = new Stat(result, category, statValue);
+                        result.getStats().add(stat);
+                    }
+                    else
+                    {
+                        stat.setValue(statValue);
+                    }
+
+                    statNum++;
+                }
+            }
+        }
+    }
+
+    private Map<Integer,Category> buildChildToCategoryMap(Team team, Element playerTable)
+    {
+        Map<Integer,Category> childToCategory = new HashMap<Integer,Category>();
+
+        String tableHeader = playerTable.select(".playertableSectionHeaderFirst").first().ownText();
+        char type = tableHeader.charAt(0);
+
+        int statNum = 0;
+        Elements statColumns = playerTable.select(".playerTableBgRowSubhead").first().select(".playertableStat");
+        for (Element statColumn : statColumns)
+        {
+            if (statColumn.hasClass("appliedPoints") || statColumn.select("span").size() != 1)
+            {
+                continue;
+            }
+
+            String name = statColumn.select("span").first().ownText();
+
+            Category category = CategoryCache.getInstance(hibernateBundle).getCategory(team.getLeague(), type, name);
+            if (category == null)
+            {
+                category = new Category(team.getLeague(), name, type, 0f);
+            }
+
+            childToCategory.put(statNum, category);
+            statNum++;
+        }
+
+        return childToCategory;
+    }
+
+    private Map<Player,Map<Category,Stat>> buildStatMap(List<Stat> stats)
+    {
+        Map<Player,Map<Category,Stat>> statMap = new HashMap<Player,Map<Category,Stat>>();
+
+        /* if (stats == null)
+        {
+            return statMap;
+        }
+
+        for (Stat stat : stats)
+        {
+            Map<Category,Stat> catMap = statMap.get(stat.getPlayer());
+            if (catMap == null)
+            {
+                catMap = new HashMap<Category,Stat>();
+                statMap.put(stat.getPlayer(), catMap);
+            }
+
+            catMap.put(stat.getCategory(), stat);
+        } */
+
+        return statMap;
+    }
+
+    private Player getPlayer(League league, Element playerRow)
+    {
+        Element playerLink = playerRow.select(".playertablePlayerName > a").first();
+        long fantasyID = Long.parseLong(playerLink.attr("playerid"));
+        String name = playerLink.ownText();
+
+        String playerText = playerRow.select(".playertablePlayerName").first().ownText();
+        String eligibility = playerText.substring(playerText.indexOf(' ', 2) + 1);
+
+        Player player = PlayerCache.getInstance(hibernateBundle).getPlayer(league, fantasyID);
+        if (player == null)
+        {
+            player = new Player(league, fantasyID, name, eligibility);
+            PlayerCache.getInstance(hibernateBundle).addPlayer(league, player);
+        }
+
+        return player;
+    }
+
+    private boolean periodIsScored(Document scoringPeriodDoc)
+    {
+        // If the first child is highlighted, then we're not looking at totals, we're looking at
+        // legit daily stats.
+        return scoringPeriodDoc.select("#ptfiltersmenuleft").first().child(0)
+                               .hasClass("playertablefiltersmenucontaineron");
+    }
+}

@@ -36,6 +36,13 @@ public class LinkUtil
         return value;
     }
 
+    public static String getLinkParameter(String noDomainURL, String parameter) throws Exception
+    {
+        URL url = new URL("http://www.dummy.com" + noDomainURL);
+
+        return getLinkParameter(url, parameter);
+    }
+
     public static String getDomain(URL url)
     {
         return url.getProtocol() + "://" + url.getHost();

@@ -3,6 +3,7 @@ package com.schmal.dao;
 import com.schmal.domain.League;
 import com.schmal.domain.Week;
 import com.yammer.dropwizard.hibernate.AbstractDAO;
+import java.util.Date;
 import java.util.List;
 import org.hibernate.SessionFactory;
 
@@ -29,5 +30,18 @@ public class WeekDAO extends AbstractDAO<Week>
         leagueDAO.save(league);
 
         return league.getWeeks();
+    }
+
+    public List<Week> getDateRange(League league, Date startDate, Date endDate)
+    {
+        return list(namedQuery("byDateRange")
+            .setParameter("league", league)
+            .setParameter("startDate", startDate)
+            .setParameter("endDate", endDate));
+    }
+
+    public Week getByID(long id)
+    {
+        return get(id);
     }
 }

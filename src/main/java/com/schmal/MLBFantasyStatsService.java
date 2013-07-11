@@ -14,7 +14,8 @@ public class MLBFantasyStatsService extends Service<MLBFantasyStatsConfig>
     private final HibernateBundle<MLBFantasyStatsConfig> hibernateBundle =
         new HibernateBundle<MLBFantasyStatsConfig>(
             League.class, Team.class, Result.class, Stat.class, Week.class, Matchup.class,
-            Player.class, Position.class, Projection.class, Category.class)
+            Player.class, Position.class, Projection.class, Category.class, ScoringPeriod.class,
+            Lineup.class, Slot.class)
         {
             @Override
             public DatabaseConfiguration getDatabaseConfiguration(MLBFantasyStatsConfig config)
@@ -43,6 +44,8 @@ public class MLBFantasyStatsService extends Service<MLBFantasyStatsConfig>
         environment.addResource(new TeamResource(hibernateBundle));
         environment.addResource(new WeekResource(hibernateBundle));
         environment.addResource(new CategoryResource(hibernateBundle));
-        environment.addResource(new ResultResource(hibernateBundle));
+        environment.addResource(new PlayerResource(hibernateBundle));
+        environment.addResource(new ScoringPeriodResource(hibernateBundle));
+        environment.addResource(new DataResource(hibernateBundle));
     }
 }

@@ -17,15 +17,20 @@ import org.hibernate.annotations.GenericGenerator;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Entity
-@Table(name = "projection")
-public class Projection
+@Table(name = "slot")
+public class Slot
 {
     @Id
     @Getter @Setter
-    @GeneratedValue(generator = "projection-id-gen")
-    @GenericGenerator(name = "projection-id-gen", strategy = "increment")
+    @GeneratedValue(generator = "slot-id-gen")
+    @GenericGenerator(name = "slot-id-gen", strategy = "increment")
     @Column(name = "id", nullable = false)
     private long ID;
+
+    @NonNull @Getter @Setter
+    @JsonIgnore
+    @OneToOne
+    private Lineup lineup;
 
     @NonNull @Getter @Setter
     @JsonIgnore
@@ -33,11 +38,10 @@ public class Projection
     private Player player;
 
     @NonNull @Getter @Setter
-    @JsonIgnore
-    @OneToOne
-    private Category category;
+    @Column(name = "position", nullable = false)
+    private String position;
 
     @NonNull @Getter @Setter
-    @Column(name = "value", nullable = false)
-    private float value;
+    @Column(name = "eligible", nullable = false)
+    private boolean eligible;
 }

@@ -1,6 +1,15 @@
 apply plugin: 'java'
 apply plugin: 'pmd'
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'de.obqo.gradle:gradle-lesscss-plugin:1.0-1.3.3'
+    }
+}
+
 jar {
     manifest {
         attributes 'Main-Class': 'com.schmal.MLBFantasyStatsService'
@@ -22,8 +31,27 @@ dependencies {
 pmdMain.ruleSets = ['basic', 'imports']
 pmdMain.dependsOn 'jar'
 
-task run(type: JavaExec, dependsOn: pmdMain) {
+task run(type: JavaExec, dependsOn: 'pmdMain') {
     main = 'com.schmal.MLBFantasyStatsService'
     classpath = sourceSets.main.runtimeClasspath
     args 'server', 'stats.yml'
 }
+
+task runDebug(type: JavaExec, dependsOn: pmdMain) {
+    main = 'com.schmal.MLBFantasyStatsService'
+    classpath = sourceSets.main.runtimeClasspath
+    args 'server', 'stats.yml'
+    debug = true
+}
+
+apply plugin: 'lesscss'
+
+lesscss {
+    source = fileTree('src/main/resources/web/less') {
+        include 'main.less'
+    }
+    dest = 'src/main/resources/web/css'
+    compress = true
+}
+
+processResources.dependsOn 'lesscss'

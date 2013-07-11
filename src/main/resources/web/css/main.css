@@ -1,0 +1,26 @@
+body{font-family:'Roboto',sans-serif;}
+.navbar-inner a{cursor:pointer;}.navbar-inner a.brand{font-weight:bold;}
+.navbar-inner a i{opacity:0.7;margin-top:3px;}
+.navbar-inner a:hover i{opacity:1;}
+.navbar-inner .nav-league-name{padding:10px 15px;color:#777;font-weight:bold;border-right:1px solid #D4D4D4;display:none;}
+.container.main{padding-top:15px;}
+.nav-list.supported-leagues{background-color:#F5F5F5;margin-right:15px;border:1px solid #D4D4D4;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;padding:10px;}
+.create-input .control-label{width:70px;}
+.create-input .controls{margin-left:80px;}
+.inline-block-top{display:inline-block;vertical-align:top;}
+.create-step .step-title{font-size:18px;border-bottom:1px solid #DDD;padding:5px;cursor:pointer;}.create-step .step-title:hover{background-color:#EEE;}
+.create-step .step-details{margin:10px;background-color:#FBFBFB;}.create-step .step-details .week .week-title{padding:5px 10px;font-weight:bold;color:#666;cursor:pointer;}.create-step .step-details .week .week-title i{font-size:14px;}.create-step .step-details .week .week-title i.unavailable{color:#c83026;}
+.create-step .step-details .week .week-title:hover{background-color:#EEE;}
+.create-step .step-details .week .week-matchups{padding:5px 30px;font-size:12px;display:none;}
+.create-step .step-collapse{font-size:14px;}
+.step-table th,.step-table td{padding:5px 10px;}
+.step-table th{color:#666;}
+.step-table td{border-right:1px solid #FFF;border-bottom:1px solid #FFF;}
+.step-table tbody tr{background-color:#F5F5F5;}
+.step-table tbody tr:nth-child(even){background-color:#FFF;}
+.progress-summary{padding:5px 10px 10px 10px;border:1px solid #ddd;background-color:#f5f5f5;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;}.progress-summary .step-summary{padding-top:5px;max-width:230px;}
+.progress-summary .step-summary-label{padding-right:10px;}.progress-summary .step-summary-label a{color:#666;}
+.progress-summary .step-checkbox{float:right;display:inline;}.progress-summary .step-checkbox.incomplete{color:#c83026;}
+.progress-summary .step-checkbox.complete{color:#51a351;}
+.progress-summary .step-checkbox.in-progress{color:#0044cc;}
+

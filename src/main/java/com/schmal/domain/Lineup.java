@@ -7,8 +7,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -22,29 +20,23 @@ import org.hibernate.annotations.GenericGenerator;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Entity
-@Table(name = "result")
-@NamedQueries({
-    @NamedQuery(
-        name = "maxScoringPeriod",
-        query = "select max(scoringPeriod.periodID) from Result " +
-                "where player.league.id = :leagueID"
-    )
-})
-public class Result
+@Table(name = "lineup")
+public class Lineup
 {
     @Id
     @Getter @Setter
-    @GeneratedValue(generator = "result-id-gen")
-    @GenericGenerator(name = "result-id-gen", strategy = "increment")
+    @GeneratedValue(generator = "lineup-id-gen")
+    @GenericGenerator(name = "lineup-id-gen", strategy = "increment")
     @Column(name = "id", nullable = false)
     private long ID;
 
     @NonNull @Getter @Setter
     @JsonIgnore
     @OneToOne
-    private Player player;
+    private Team team;
 
     @NonNull @Getter @Setter
+    @JsonIgnore
     @OneToOne
     private ScoringPeriod scoringPeriod;
 
@@ -52,24 +44,30 @@ public class Result
     private float score;
 
     @Getter @Setter
-    @OneToMany(mappedBy = "result", orphanRemoval = true, cascade = CascadeType.ALL)
-    private List<Stat> stats;
+    @OneToMany(mappedBy = "lineup", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<Slot> slots;
 
     public void calculateScore()
     {
         float score = 0f;
 
-        for (Stat stat : getStats())
+        for (Slot slot : getSlots())
         {
-            if ("IP".equals(stat.getCategory().getCategory()))
+            Result result = slot.getPlayer().getResult(scoringPeriod.getPeriodID());
+
+            if (!slot.isEligible() ||
+                "DL".equals(slot.getPosition()) ||
+                "Bench".equals(slot.getPosition()))
             {
-                float ip = stat.getValue() * 10;
-                int outs = Math.round(ip % 10) + Math.round(ip / 10) * 3;
-                score += outs * Math.round(stat.getCategory().getPoints() / 3);
                 continue;
             }
 
-            score += stat.getValue() * stat.getCategory().getPoints();
+            if (result == null || result.getStats() == null)
+            {
+                continue;
+            }
+
+            score += result.getScore();
         }
 
         this.score = score;

@@ -18,3 +18,4 @@ http:
 
     rootPath: /services/*
     port: 8080
+    

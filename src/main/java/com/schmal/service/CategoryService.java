@@ -25,7 +25,7 @@ public class CategoryService
 
     public CategoryService(HibernateBundle hibernateBundle)
     {
-        dao = new CategoryDAO(hibernateBundle.getSessionFactory());
+        dao = new CategoryDAO(hibernateBundle);
         leagueService = new LeagueService(hibernateBundle);
     }
 
