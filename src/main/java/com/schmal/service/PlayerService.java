@@ -195,7 +195,7 @@ public class PlayerService
     {
         Element firstCategory = playerRow.children().select(".playertableStat").first();
 
-        return "--".equals(getStatText(firstCategory));
+        return getStatText(firstCategory).contains("--");
     }
 
     private String getStatText(Element cell)
@@ -245,7 +245,11 @@ public class PlayerService
                 continue;
             }
 
-            float statValue = Float.parseFloat(getStatText(categoryElement));
+            Category category = categoryMap.get(i);
+
+            float statValue = ("H".equals(category.getCategory())) ?
+                Float.parseFloat(getStatText(categoryElement).split("/")[0]) :
+                Float.parseFloat(getStatText(categoryElement));
 
             if (statValue == 0f)
             {
